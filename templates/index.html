@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Добро пожаловать в WeatherFlow!</h1>
+    <p>Простой и удобный прогноз погоды</p>
+
+    <form action="/weather" style="text-align: center; margin-top: 20px;" id="weather-form">
+        <input type="text" name="city" placeholder="Введите город" required>
+        <button type="submit">Узнать погоду</button>
+    </form>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <p>или</p>
+        <button id="detect-location" class="btn secondary">Определить мое местоположение</button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}
