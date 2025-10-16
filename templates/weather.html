@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Погода в {{ weather.city }}{% endblock %}
+
+{% block content %}
+<div class="weather-container">
+    <h1>Погода в {{ weather.city }}, {{ weather.country }}</h1>
+
+    <div class="weather-card">
+        <div class="weather-main">
+            {% if weather.condition_icon %}
+            <div class="condition-icon">
+                <img src="{{ weather.condition_icon }}" alt="{{ weather.condition }}">
+            </div>
+            {% endif %}
+            <div class="temperature">
+                {{ weather.temperature }}°C
+            </div>
+            <div class="condition">
+                {{ weather.condition }}
+            </div>
+            <div class="feels-like">
+                Ощущается как {{ weather.feels_like }}°C
+            </div>
+        </div>
+
+        <div class="weather-grid">
+            <div class="weather-details">
+                <h3>Основные параметры</h3>
+                <div class="detail-item">
+                    <span class="label">Влажность:</span>
+                    <span class="value">{{ weather.humidity }}%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Давление:</span>
+                    <span class="value">{{ weather.pressure }} гПа</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">УФ-индекс:</span>
+                    <span class="value">{{ weather.uv }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Осадки:</span>
+                    <span class="value">{{ weather.precip }} мм</span>
+                </div>
+            </div>
+
+            <div class="weather-details">
+                <h3>Ветер</h3>
+                <div class="detail-item">
+                    <span class="label">Скорость:</span>
+                    <span class="value">{{ weather.wind_speed }} км/ч</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Направление:</span>
+                    <span class="value">{{ weather.wind_dir }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Порывы:</span>
+                    <span class="value">{{ weather.gust }} км/ч</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Видимость:</span>
+                    <span class="value">{{ weather.vis_km }} км</span>
+                </div>
+            </div>
+        </div>
+
+        {# Безопасная проверка наличия прогноза #}
+        {% if weather.forecast and weather.forecast.forecastday and weather.forecast.forecastday|length > 1 %}
+        <div class="forecast">
+            <h3>Прогноз на завтра</h3>
+            <div class="forecast-day">
+                {% set tomorrow = weather.forecast.forecastday[1].day %}
+                <div class="forecast-temp">
+                    <span class="max-temp">{{ tomorrow.maxtemp_c }}°</span>
+                    <span class="min-temp">{{ tomorrow.mintemp_c }}°</span>
+                </div>
+                <div class="forecast-condition">
+                    {{ tomorrow.condition.text }}
+                </div>
+                <div class="forecast-details">
+                    Влажность: {{ tomorrow.avghumidity }}% |
+                    Вероятность дождя: {{ tomorrow.daily_chance_of_rain }}%
+                </div>
+            </div>
+        </div>
+        {% elif weather.forecast and weather.forecast.forecastday and weather.forecast.forecastday|length > 0 %}
+        <div class="forecast">
+            <h3>Прогноз на сегодня</h3>
+            <div class="forecast-day">
+                {% set today_forecast = weather.forecast.forecastday[0].day %}
+                <div class="forecast-temp">
+                    <span class="max-temp">{{ today_forecast.maxtemp_c }}°</span>
+                    <span class="min-temp">{{ today_forecast.mintemp_c }}°</span>
+                </div>
+                <div class="forecast-condition">
+                    {{ today_forecast.condition.text }}
+                </div>
+                <div class="forecast-details">
+                    Влажность: {{ today_forecast.avghumidity }}% |
+                    Вероятность дождя: {{ today_forecast.daily_chance_of_rain }}%
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="actions">
+        <a href="{{ url_for('index') }}" class="btn">Новый поиск</a>
+    </div>
+</div>
+{% endblock %}
